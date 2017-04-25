@@ -10,6 +10,7 @@ export default TabNavigator({
   New: { screen: NewNavigator },
 
 }, {
+  ...TabNavigator.Presets.iOSBottomTabs,
   tabBarOptions: {
     activeTintColor: '#000',
     activeBackgroundColor: '#fff',
