@@ -1,8 +1,10 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, StatusBar } from 'react-native';
+import RootNavigator from './navigators/RootNavigator';
 
 export default () => (
-  <View>
-    <Text>hello world</Text>
+  <View style={{ flex: 1 }}>
+    <StatusBar barStyle="light-content" />
+    <RootNavigator />
   </View>
 );
