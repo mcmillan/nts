@@ -1,6 +1,6 @@
 // @flow
 import React from 'react';
-import { View, ListView, Text, Image, TouchableHighlight } from 'react-native';
+import { View, ListView, Text, Image, TouchableHighlight, RefreshControl } from 'react-native';
 
 type Episode = {
   id: string,
@@ -28,9 +28,15 @@ export default (config: EpisodeListScreenConfiguration) =>
 
     state = {
       episodes: this.dataSource.cloneWithRows([]),
+      refreshing: false,
     }
 
     componentDidMount() {
+      this.load();
+    }
+
+    refresh() {
+      this.setState({ refreshing: true });
       this.load();
     }
 
@@ -40,6 +46,7 @@ export default (config: EpisodeListScreenConfiguration) =>
 
       this.setState({
         episodes: this.dataSource.cloneWithRows(json.results.map(config.resultTransformation)),
+        refreshing: false,
       });
     }
 
@@ -52,6 +59,13 @@ export default (config: EpisodeListScreenConfiguration) =>
       } : {};
       return (
         <ListView
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={() => this.refresh()}
+              tintColor="#fff"
+            />
+          }
           dataSource={this.state.episodes}
           renderRow={this.renderRow}
           enableEmptySections
