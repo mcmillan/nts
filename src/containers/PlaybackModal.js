@@ -2,9 +2,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Dimensions, Platform, Image, View, WebView, Text, TouchableHighlight } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import { Episode, State } from '../types';
 import { hideModal, play, pause } from '../actions/nowPlaying';
-import Icon from 'react-native-vector-icons/FontAwesome';
 
 const APPBAR_HEIGHT = Platform.OS === 'ios' ? 44 : 56;
 const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : 0;
@@ -27,7 +27,6 @@ const mapStateToProps = (state: State): PlaybackModalStateProps => ({
 const mapDispatchToProps = (dispatch: Function): PlaybackModalDispatchProps => ({
   hide: () => dispatch(hideModal()),
   updatePlaybackStatus: (status: string) => {
-    console.log(status);
     dispatch(status === 'play' ? play() : pause());
   },
 });
