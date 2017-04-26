@@ -9,7 +9,8 @@ export type Episode = {
 
 export type NowPlayingState = {
   episode: Episode,
-  NowPlayingState: boolean,
+  showModal: boolean,
+  playing: boolean,
 }
 
 export type State = {

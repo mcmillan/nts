@@ -3,7 +3,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Dimensions, Platform, Image, View, WebView, Text, TouchableHighlight } from 'react-native';
 import { Episode, State } from '../types';
-import { hideModal } from '../actions/nowPlaying';
+import { hideModal, play, pause } from '../actions/nowPlaying';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const APPBAR_HEIGHT = Platform.OS === 'ios' ? 44 : 56;
 const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : 0;
@@ -15,6 +16,7 @@ type PlaybackModalStateProps = {
 
 type PlaybackModalDispatchProps = {
   hide: Function,
+  updatePlaybackStatus: Function,
 }
 
 const mapStateToProps = (state: State): PlaybackModalStateProps => ({
@@ -24,12 +26,33 @@ const mapStateToProps = (state: State): PlaybackModalStateProps => ({
 
 const mapDispatchToProps = (dispatch: Function): PlaybackModalDispatchProps => ({
   hide: () => dispatch(hideModal()),
+  updatePlaybackStatus: (status: string) => {
+    console.log(status);
+    dispatch(status === 'play' ? play() : pause());
+  },
 });
 
 const mixcloudProxyUrl = (episode: Episode): string => {
   const feedUrl = encodeURIComponent(episode.mixcloudUrl.replace('https://www.mixcloud.com', ''));
   return `https://s3.eu-west-2.amazonaws.com/nts-app/mixcloudProxy.html?mixcloudUrl=${feedUrl}`;
 };
+
+// see https://github.com/facebook/react-native/issues/10865#issuecomment-269847703
+/* eslint-disable */
+const patchPostMessageFunction = function() {
+  var originalPostMessage = window.postMessage;
+
+  var patchedPostMessage: any = function(message, targetOrigin, transfer) {
+    originalPostMessage(message, targetOrigin, transfer);
+  };
+
+  patchedPostMessage.toString = function() {
+    return String(Object.hasOwnProperty).replace('hasOwnProperty', 'postMessage');
+  };
+
+  window.postMessage = patchedPostMessage;
+};
+/* eslint-enable */
 
 const PlaybackModal = (props: PlaybackModalStateProps & PlaybackModalDispatchProps) => (
   <View
@@ -50,7 +73,7 @@ const PlaybackModal = (props: PlaybackModalStateProps & PlaybackModalDispatchPro
           height: STATUSBAR_HEIGHT + APPBAR_HEIGHT,
           paddingTop: STATUSBAR_HEIGHT,
           flexDirection: 'row',
-          alignItems: 'center',
+          alignItems: 'stretch',
           justifyContent: 'center',
           borderBottomWidth: 2,
           borderBottomColor: '#fff',
@@ -64,7 +87,8 @@ const PlaybackModal = (props: PlaybackModalStateProps & PlaybackModalDispatchPro
             flex: 1,
             textAlign: 'center',
             fontWeight: 'bold',
-            paddingLeft: 50,
+            alignSelf: 'center',
+            paddingLeft: 32,
           }}
         >
           Now Playing
@@ -72,9 +96,9 @@ const PlaybackModal = (props: PlaybackModalStateProps & PlaybackModalDispatchPro
 
         <TouchableHighlight
           onPress={props.hide}
-          style={{ width: 50, paddingRight: 10 }}
+          style={{ width: 32, justifyContent: 'center', alignItems: 'center' }}
         >
-          <Text style={{ color: '#fff', fontFamily: 'Roboto Mono', textAlign: 'right' }}>x</Text>
+          <Icon name="times" color="#fff" size={16} />
         </TouchableHighlight>
       </View>
       {props.episode &&
@@ -94,6 +118,8 @@ const PlaybackModal = (props: PlaybackModalStateProps & PlaybackModalDispatchPro
             style={{ height: '100%' }}
             scrollEnabled={false}
             mediaPlaybackRequiresUserAction={false}
+            injectedJavaScript={`(${String(patchPostMessageFunction)})();`}
+            onMessage={e => props.updatePlaybackStatus(e.nativeEvent.data)}
           />
         </View>}
     </View>

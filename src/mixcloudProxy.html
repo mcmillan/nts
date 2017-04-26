@@ -10,6 +10,18 @@
       var promise = Mixcloud.FooterWidget(feedUrl, { light: true, hide_artwork: true });
       promise.then(function(widget) {
         widget.play();
+
+        widget.events.play.on(function() {
+          window.postMessage('play');
+        });
+
+        widget.events.pause.on(function() {
+          window.postMessage('pause');
+        });
+
+        widget.events.ended.on(function() {
+          window.postMessage('ended');
+        })
       });
     </script>
   </body>
