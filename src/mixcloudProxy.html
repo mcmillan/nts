@@ -6,7 +6,8 @@
   <body>
     <script src="https://widget.mixcloud.com/media/js/footerWidgetApi.js"></script>
     <script>
-      var promise = Mixcloud.FooterWidget('/NTSRadio/moxie-sandboards-12th-april-2017/', { light: true, hide_artwork: true });
+      var feedUrl = window.location.search.replace('?mixcloudUrl=', '');
+      var promise = Mixcloud.FooterWidget(feedUrl, { light: true, hide_artwork: true });
       promise.then(function(widget) {
         widget.play();
       });

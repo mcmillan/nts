@@ -8,6 +8,7 @@ export default EpisodeListScreen({
     id: show.now.embeds.details.show_alias,
     name: show.now.embeds.details.name,
     description: show.now.embeds.details.description,
+    imageUrl: show.now.embeds.details.media.picture_medium_large,
     backgroundImageUrl: show.now.embeds.details.media.background_medium_large,
   }),
   fitToHeight: true,

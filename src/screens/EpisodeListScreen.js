@@ -1,13 +1,9 @@
 // @flow
 import React from 'react';
+import { connect } from 'react-redux';
 import { View, ListView, Text, Image, TouchableHighlight, RefreshControl } from 'react-native';
-
-type Episode = {
-  id: string,
-  name: string,
-  description: string,
-  backgroundImageUrl: string,
-}
+import { Episode } from '../types';
+import { setEpisode } from '../actions/nowPlaying';
 
 type EpisodeListScreenConfiguration = {
   url: string,
@@ -16,8 +12,20 @@ type EpisodeListScreenConfiguration = {
   fitToHeight?: boolean,
 }
 
-export default (config: EpisodeListScreenConfiguration) =>
-  class EpisodeListScreen extends React.Component {
+type EpisodeListScreenProps = {
+  play: Function,
+}
+
+export default (config: EpisodeListScreenConfiguration) => {
+  const mapDispatchToProps = (dispatch: Function) => ({
+    play: (episode: Episode) => dispatch(setEpisode(episode)),
+  });
+
+  class EpisodeListScreen extends React.PureComponent<void, EpisodeListScreenProps, any> {
+    static propTypes = {
+      play: React.PropTypes.func.isRequired,
+    }
+
     static navigationOptions = {
       title: config.title,
     }
@@ -67,7 +75,7 @@ export default (config: EpisodeListScreenConfiguration) =>
             />
           }
           dataSource={this.state.episodes}
-          renderRow={this.renderRow}
+          renderRow={row => this.renderRow(row)}
           enableEmptySections
           style={{ backgroundColor: '#000' }}
           contentContainerStyle={containerStyle}
@@ -78,7 +86,7 @@ export default (config: EpisodeListScreenConfiguration) =>
     renderRow(row: Episode) {
       const containerStyle = config.fitToHeight ? { flex: 1 } : { aspectRatio: 1.25 };
       return (
-        <TouchableHighlight style={containerStyle}>
+        <TouchableHighlight style={containerStyle} onPress={() => this.props.play(row)}>
           <Image style={{ flex: 1, justifyContent: 'flex-end', resizeMode: 'cover', padding: 15 }} source={{ uri: row.backgroundImageUrl }}>
             <View style={{ backgroundColor: '#000', borderColor: '#fff', borderWidth: 2, paddingHorizontal: 8, paddingVertical: 4 }}>
               <Text style={{ color: '#fff', fontSize: 14, fontFamily: 'Roboto Mono', fontWeight: 'bold' }}>{row.name}</Text>
@@ -89,4 +97,7 @@ export default (config: EpisodeListScreenConfiguration) =>
         </TouchableHighlight>
       );
     }
-  };
+  }
+
+  return connect(undefined, mapDispatchToProps)(EpisodeListScreen);
+};

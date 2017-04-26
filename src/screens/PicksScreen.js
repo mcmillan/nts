@@ -8,6 +8,8 @@ export default EpisodeListScreen({
     id: episode.episode_alias,
     name: episode.name,
     description: episode.description,
+    imageUrl: episode.media.picture_medium_large,
     backgroundImageUrl: episode.media.background_medium_large,
+    mixcloudUrl: episode.mixcloud,
   }),
 });
