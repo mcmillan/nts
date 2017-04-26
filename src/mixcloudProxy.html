@@ -7,7 +7,7 @@
     <script src="https://widget.mixcloud.com/media/js/footerWidgetApi.js"></script>
     <script>
       var feedUrl = window.location.search.replace('?mixcloudUrl=', '');
-      var promise = Mixcloud.FooterWidget(feedUrl, { light: true, hide_artwork: true });
+      var promise = Mixcloud.FooterWidget(feedUrl, { light: true, hide_artwork: true, disableUnloadWarning: true });
       promise.then(function(widget) {
         widget.play();
 
@@ -21,7 +21,7 @@
 
         widget.events.ended.on(function() {
           window.postMessage('ended');
-        })
+        });
       });
     </script>
   </body>
