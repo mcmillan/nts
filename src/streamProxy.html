@@ -1,0 +1,60 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+  </head>
+
+  <body style="padding: 0; margin: 0;">
+    <div style="height: 60px; color: #000; text-align: center; line-height: 60px; font-size: 24px;">
+      <span id="control"></span>
+    </div>
+
+    <script>
+      var channel = window.location.search.replace('?channel=', '');
+      var url = 'http://stream-relay-geo.ntslive.net/stream';
+      if (channel === '2') {
+        url = 'http://stream-relay-geo.ntslive.net/stream2';
+      }
+
+      var control = document.getElementById('control');
+      var audio = new Audio();
+      var playing = false;
+      audio.preload = 'none';
+      audio.load();
+
+      function play() {
+        audio.src = url + '?t=' + new Date().valueOf();
+        audio.load();
+        audio.play();
+      }
+
+      function stop() {
+        audio.removeAttribute('src');
+        audio.load();
+      }
+
+      function markAsPlaying() {
+        control.className = 'fa fa-pause';
+        window.postMessage('play');
+        playing = true;
+      }
+
+      function markAsStopped() {
+        control.className = 'fa fa-play';
+        window.postMessage('stop');
+        playing = false;
+      }
+
+      audio.addEventListener('playing', markAsPlaying, false);
+      audio.addEventListener('ended', markAsStopped, false);
+      audio.addEventListener('emptied', markAsStopped, false);
+
+      play();
+      control.addEventListener('click', function(e) {
+        e.preventDefault();
+        playing ? stop() : play();
+      }, false);
+    </script>
+  </body>
+</html>

@@ -1,5 +1,5 @@
 // @flow
-import { Episode } from '../types';
+import type { Episode } from '../types';
 
 export const SET_EPISODE = 'NowPlaying/SetEpisode';
 export const SHOW_MODAL = 'NowPlaying/ShowModal';

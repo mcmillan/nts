@@ -2,8 +2,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { View, ListView, Text, Image, TouchableHighlight, RefreshControl } from 'react-native';
-import { Episode } from '../types';
 import { setEpisode } from '../actions/nowPlaying';
+
+import type { Episode } from '../types';
 
 type EpisodeListScreenConfiguration = {
   url: string,

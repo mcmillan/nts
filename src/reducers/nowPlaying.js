@@ -1,6 +1,6 @@
 // @flow
 import { SET_EPISODE, SHOW_MODAL, HIDE_MODAL, PLAY, PAUSE } from '../actions/nowPlaying';
-import { NowPlayingState } from '../types';
+import type { NowPlayingState } from '../types';
 
 const initialState: NowPlayingState = {
   showModal: false,

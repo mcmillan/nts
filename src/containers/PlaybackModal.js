@@ -3,15 +3,16 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Dimensions, Platform, Image, View, WebView, Text, TouchableHighlight } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { Episode, State } from '../types';
 import { hideModal, play, pause } from '../actions/nowPlaying';
+
+import type { Episode, State } from '../types';
 
 const APPBAR_HEIGHT = Platform.OS === 'ios' ? 44 : 56;
 const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : 0;
 
 type PlaybackModalStateProps = {
   visible: boolean,
-  episode: Episode,
+  episode?: Episode,
 }
 
 type PlaybackModalDispatchProps = {
@@ -31,9 +32,21 @@ const mapDispatchToProps = (dispatch: Function): PlaybackModalDispatchProps => (
   },
 });
 
-const mixcloudProxyUrl = (episode: Episode): string => {
-  const feedUrl = encodeURIComponent(episode.mixcloudUrl.replace('https://www.mixcloud.com', ''));
+const mixcloudProxyUrl = (mixcloudUrl: string): string => {
+  const feedUrl = encodeURIComponent(mixcloudUrl.replace('https://www.mixcloud.com', ''));
   return `https://s3.eu-west-2.amazonaws.com/nts-app/mixcloudProxy.html?mixcloudUrl=${feedUrl}`;
+};
+
+const playbackProxyUrl = (episode: Episode): string => {
+  if (episode.mixcloudUrl) {
+    return mixcloudProxyUrl(episode.mixcloudUrl);
+  }
+
+  if (episode.channel) {
+    return `https://s3.eu-west-2.amazonaws.com/nts-app/streamProxy.html?channel=${episode.channel}`;
+  }
+
+  throw new Error('Unable to find playback mechanism');
 };
 
 // see https://github.com/facebook/react-native/issues/10865#issuecomment-269847703
@@ -110,10 +123,10 @@ const PlaybackModal = (props: PlaybackModalStateProps & PlaybackModalDispatchPro
             still need to figure out what goes here
           </Text>
         </View>}
-      {props.episode && props.episode.mixcloudUrl &&
+      {props.episode &&
         <View style={{ height: 60 }}>
           <WebView
-            source={{ uri: mixcloudProxyUrl(props.episode) }}
+            source={{ uri: playbackProxyUrl(props.episode) }}
             style={{ height: '100%' }}
             scrollEnabled={false}
             mediaPlaybackRequiresUserAction={false}

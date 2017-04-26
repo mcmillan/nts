@@ -4,10 +4,11 @@ import { View, TouchableHighlight, Text } from 'react-native';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { showModal } from '../actions/nowPlaying';
-import { Episode, State } from '../types';
+
+import type { Episode, State } from '../types';
 
 type NowPlayingBarStateProps = {
-  episode: Episode,
+  episode?: Episode,
   playing: boolean,
 }
 

@@ -1,3 +1,4 @@
+// @flow
 export type Episode = {
   id: string,
   name: string,
@@ -5,12 +6,13 @@ export type Episode = {
   imageUrl: string,
   backgroundImageUrl: string,
   mixcloudUrl?: string,
+  channel?: string,
 }
 
 export type NowPlayingState = {
-  episode: Episode,
   showModal: boolean,
   playing: boolean,
+  episode?: Episode,
 }
 
 export type State = {
