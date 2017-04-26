@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import { connect } from 'react-redux';
-import { Dimensions, Platform, Image, View, WebView, Text, TouchableHighlight } from 'react-native';
+import { Dimensions, Platform, Image, View, WebView, Text, TouchableHighlight, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { hideModal, play, pause } from '../actions/nowPlaying';
 
@@ -114,15 +114,20 @@ const PlaybackModal = (props: PlaybackModalStateProps & PlaybackModalDispatchPro
         </TouchableHighlight>
       </View>
       {props.episode &&
-        <View style={{ flex: 1 }}>
+        <ScrollView style={{ flex: 1 }}>
           <Image
             source={{ uri: props.episode.imageUrl }}
             style={{ aspectRatio: 1.5, resizeMode: 'cover' }}
           />
-          <Text style={{ color: '#fff', padding: 10 }}>
-            still need to figure out what goes here
-          </Text>
-        </View>}
+          <View style={{ paddingVertical: 10, paddingHorizontal: 14 }}>
+            <Text style={{ color: '#fff', fontFamily: 'Roboto Mono', fontWeight: 'bold', fontSize: 16 }}>
+              {props.episode.name}
+            </Text>
+            <Text style={{ color: '#fff', fontFamily: 'Roboto Mono', fontSize: 14 }}>
+              {props.episode.description}
+            </Text>
+          </View>
+        </ScrollView>}
       {props.episode &&
         <View style={{ height: 60 }}>
           <WebView
