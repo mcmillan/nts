@@ -49,6 +49,11 @@
       audio.addEventListener('playing', markAsPlaying, false);
       audio.addEventListener('ended', markAsStopped, false);
       audio.addEventListener('emptied', markAsStopped, false);
+      audio.addEventListener('pause', function() {
+        if (audio.error && audio.error.code === 2) {
+          play();
+        }
+      });
 
       play();
       control.addEventListener('click', function(e) {
